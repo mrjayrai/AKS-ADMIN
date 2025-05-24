@@ -10,7 +10,7 @@ import {
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PageIcon,
+  // PageIcon,
   TableIcon,
   UserCircleIcon,
 } from "../icons/index";
@@ -46,23 +46,32 @@ const navItems: NavItem[] = [
   },
 
   {
-    name: "Forms",
+    name: "Utility",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Products", path: "/product", pro: false },
+      { name: "Warehouses", path: "/warehouses", pro: false },
+      { name: "Stores", path: "/stores", pro: false },
+      { name: "Picker", path: "/picker", pro: false },
+      { name: "Salesman", path: "/salesman", pro: false },
+      { name: "Accounting", path: "/accounts", pro: false }
     ],
   },
+  {
+    name: "Approvals",
+    icon: <TableIcon />,
+    subItems: [
+      { name: "Approval Orders", path: "/basic-tables", pro: false }
+    ],
+  },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
