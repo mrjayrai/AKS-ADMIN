@@ -3,14 +3,56 @@ import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
+import api from "@/apilink";
+import { useRouter } from "next/navigation";
 import {  EyeCloseIcon, EyeIcon } from "@/icons";
 // ChevronLeftIcon,
 import Link from "next/link";
 import React, { useState } from "react";
 
+import { useAuth } from "@/context/AuthContext";
+
+
 export default function SignInForm() {
+  const [email,setEmail] = useState("");
+  const [password,setPassword]=useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  
+  const { setAuthData } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(api+"users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const data = await res.json();
+      // console.log("Login successful", data);
+      setAuthData(data);
+      localStorage.setItem("authToken", data.token);
+      router.push("/dashboard");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    } catch (err:any) {
+      setError( "Invalid Credentails");
+      alert(error);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -85,13 +127,18 @@ export default function SignInForm() {
                 </span>
               </div>
             </div> */}
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" type="email" />
+                  <Input
+                   placeholder="info@gmail.com" 
+                   type="email" 
+                   defaultValue={email}
+                   onChange={(e)=> setEmail(e.target.value)}
+                   />
                 </div>
                 <div>
                   <Label>
@@ -101,6 +148,8 @@ export default function SignInForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      defaultValue={password}
+                   onChange={(e)=> setPassword(e.target.value)}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
