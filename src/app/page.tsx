@@ -1,4 +1,4 @@
-import SignIn from "@/app/(full-width-pages)/(auth)/signin/page";
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Sign() {
-  return <SignIn />;
+ redirect("/signin");
 }
