@@ -4,11 +4,43 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+import Select from "@/components/form/Select";
+import axios from "axios";
+import api from "@/apilink";
 
 export default function SignUpForm() {
+   const [email,setEmail] = useState("");
+    const [password,setPassword]=useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const[selectedSubscription, setSelectedSubscription] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [subscriptionOptions, setSubscriptionOptions] = useState([]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log(email, password, firstName, lastName,selectedSubscription);
+    }
+
+useEffect(() => {
+  const fetchSubscriptionPlans = async () => {
+    try{
+      const response = await axios.get(api+"users/model/get");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data= response.data.map((sub:any)=>({
+        value:sub._id,
+        label: sub.subscriptionType,
+      }));
+      setSubscriptionOptions(data);
+    }catch (error) {
+      console.error("Error fetching subscription plans:", error);
+    }
+  };
+  fetchSubscriptionPlans();
+}, []);
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full overflow-y-auto no-scrollbar">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
@@ -32,7 +64,7 @@ export default function SignUpForm() {
           </div>
           <div>
             {/* <!-- Sign Up Form --> */}
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* <!-- First Name --> */}
@@ -44,6 +76,8 @@ export default function SignUpForm() {
                       type="text"
                       id="fname"
                       name="fname"
+                      defaultValue={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Enter your first name"
                     />
                   </div>
@@ -56,6 +90,8 @@ export default function SignUpForm() {
                       type="text"
                       id="lname"
                       name="lname"
+                      defaultValue={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                       placeholder="Enter your last name"
                     />
                   </div>
@@ -69,9 +105,25 @@ export default function SignUpForm() {
                     type="email"
                     id="email"
                     name="email"
+                    defaultValue={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                   />
                 </div>
+                {/* Subscription */}
+                <div>
+  <Label>
+                      Choose Subscription<span className="text-error-500">*</span>
+                    </Label>
+                    
+  <Select
+    options={subscriptionOptions}
+    placeholder="Choose Subscription"
+    onChange={(value) => setSelectedSubscription(value)}
+    defaultValue={selectedSubscription}
+    className="dark:bg-dark-900"
+  />
+</div>
                 {/* <!-- Password --> */}
                 <div>
                   <Label>
@@ -81,6 +133,8 @@ export default function SignUpForm() {
                     <Input
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
+                      defaultValue={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -94,6 +148,7 @@ export default function SignUpForm() {
                     </span>
                   </div>
                 </div>
+
                 {/* <!-- Checkbox --> */}
                 <div className="flex items-center gap-3">
                   <Checkbox
